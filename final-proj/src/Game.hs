@@ -65,20 +65,7 @@ width = 9
 initBoard :: Board 
 initBoard = Map.empty 
 
-rowsCols :: [[Loc]]
-rowsCols = [[(x, y) | y <- [0..height - 1]] | x <- [0..width - 1]] ++ 
-           [[(x, y) | x <- [0..width - 1]] | y <- [0..height - 1]]
 
-boxes :: [[Loc]]
-boxes = [(x, y) | x <- [0..2], y <- [0..2]] ++
-        [(x, y) | x <- [0..2], y <- [3..5]] ++
-        [(x, y) | x <- [0..2], y <- [6..8]] ++
-        [(x, y) | x <- [3..5], y <- [0..2]] ++
-        [(x, y) | x <- [3..5], y <- [3..5]] ++
-        [(x, y) | x <- [3..5], y <- [6..8]] ++
-        [(x, y) | x <- [6..8], y <- [0..2]] ++
-        [(x, y) | x <- [6..8], y <- [3..5]] ++
-        [(x, y) | x <- [6..8], y <- [6..8]]
 
 -- squares :: [Loc]
 -- squares = range ((0,0), (width-1, height-1))
