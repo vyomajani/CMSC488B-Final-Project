@@ -19,6 +19,15 @@ import System.Random (Random(..), newStdGen)
 
 import Game 
 
+-- Coding Plan
+-- 1) Write out solve function to solve an input sudoku board 
+-- 2) Create basic UI for user to put numbers into 
+-- 3) Incorporate solution into UI 
+-- 4) Create QuickCheck for checking sudoku solver 
+-- 5) Create a csv parser to parse sudoku inputs 
+-- 6) Make it all nxn
+
+
 -- Types 
 
 type Loc = (Int, Int)
@@ -27,8 +36,7 @@ data Value = Zero | One | Two | Three | Four | Five | Six | Seven | Eight | Nine
  deriving (Eq, Show)
  -- 0 means it hasn't been filled in yet? 
 
-type Board = Map Loc Value -- would it be easier to have a 2D list? 
--- no bc you can't index 2D lists well
+type Board = Map Loc Value
 
 -- Constants 
 
@@ -57,8 +65,6 @@ boxes = [(x, y) | x <- [0..2], y <- [0..2]] ++
         [(x, y) | x <- [6..8], y <- [3..5]] ++
         [(x, y) | x <- [6..8], y <- [6..8]]
 
--- Functions 
-
 -- should this be a parser? How are we creating sudoku boards? 
 -- Creates empty sudoku board (All 0s)
 initSudoku :: Board 
@@ -66,15 +72,11 @@ initSudoku = helper locations initBoard
     where 
         helper [] board = board
         helper (h : t) board = helper t (insert h Zero board)
+        -- for the purposes of testing? Until we have a parser? 
+
+-- Functions 
 
 solve :: Board -> Board 
 solve board = 
-
-
-
-    -- let row = -1 in let col = -1 in let isEmpty = True in 
-    -- let _ = doubleFor 
-    -- where 
-    --     doubleFor i j = if notMember (i, j) board then -- still a missing value
-    --     row = i, col = j, isEmpty = False 
-    -- else 
+    helper board loc 
+    where 
