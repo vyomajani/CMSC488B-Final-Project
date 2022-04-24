@@ -17,7 +17,7 @@ import Control.Monad.Trans.State
 
 import System.Random (Random(..), newStdGen)
 
-import Game 
+--import Game 
 
 -- Coding Plan
 -- 1) Write out solve function to solve an input sudoku board 
@@ -58,15 +58,15 @@ rowsCols = [[(x, y) | y <- [0..height - 1]] | x <- [0..width - 1]] ++
            [[(x, y) | x <- [0..width - 1]] | y <- [0..height - 1]]
 
 boxes :: [[Loc]]
-boxes = [(x, y) | x <- [0..2], y <- [0..2]] ++
-        [(x, y) | x <- [0..2], y <- [3..5]] ++
-        [(x, y) | x <- [0..2], y <- [6..8]] ++
-        [(x, y) | x <- [3..5], y <- [0..2]] ++
-        [(x, y) | x <- [3..5], y <- [3..5]] ++
-        [(x, y) | x <- [3..5], y <- [6..8]] ++
-        [(x, y) | x <- [6..8], y <- [0..2]] ++
-        [(x, y) | x <- [6..8], y <- [3..5]] ++
-        [(x, y) | x <- [6..8], y <- [6..8]]
+boxes = [[(x, y) | x <- [0..2], y <- [0..2]],
+         [(x, y) | x <- [0..2], y <- [3..5]],
+         [(x, y) | x <- [0..2], y <- [6..8]],
+         [(x, y) | x <- [3..5], y <- [0..2]],
+         [(x, y) | x <- [3..5], y <- [3..5]],
+         [(x, y) | x <- [3..5], y <- [6..8]],
+         [(x, y) | x <- [6..8], y <- [0..2]],
+         [(x, y) | x <- [6..8], y <- [3..5]],
+         [(x, y) | x <- [6..8], y <- [6..8]]]
 
 firstRow :: [Loc] 
 firstRow = [(0, y) | y <- [0..height - 1]]
@@ -74,7 +74,7 @@ firstRow = [(0, y) | y <- [0..height - 1]]
 topLeft :: [Loc]
 topLeft = [(x, y) | x <- [0..2], y <- [0..2]]
 
-midLeft :: [Loc]
+--midLeft :: [Loc]
 
 -- should this be a parser? How are we creating sudoku boards? 
 -- Creates empty sudoku board (All 0s)
@@ -82,30 +82,45 @@ initSudoku :: Board
 initSudoku = helper locations initBoard
     where 
         helper [] board = board
-        helper (h : t) board = helper t (insert h Zero board)
+        helper (h : t) board = helper t (Map.insert h Zero board)
         -- for the purposes of testing? Until we have a parser? 
 
 -- Functions 
 
-solve :: Board -> Board 
+solve :: Board -> Board -> Board 
 solve input board = 
-    helper input board locations -- locations :: [Loc]
+    Map.fromList $ solveHelper (Map.toList input) (Map.toList board) locations -- locations :: [Loc]
     where 
-        helper input board [] = board 
-        helper input board (h : t) = 
+        solveHelper input board [] = board 
+        solveHelper input board (h : t) = 
             case lookup h board of 
                 Nothing -> error "Should not happen, always initialize sudoku in initSudoku?"
                 -- If the board has Zero, then no value has been tried yet
-                Just Zero -> tryValue Zero 
+                Just Zero -> tryValue board One 
                 -- If the board has a value, but it originally had Zero there, double check that the value still works 
                 Just value -> if lookup h input == Just Zero then tryValue value 
-                            else helper board t  
+                            else solveHelper input board t  
         
         -- This function goes through every possible number that could go in the spot
         -- If a number can go, it tries that
         -- Otherwise, it calls helper again on a previous location to retry the values? Or changes a previous location 
         tryValue board Zero = tryValue board One 
         tryValue board value = case value of 
-            One -> (fold (\loc -> \acc -> acc && lookup loc board != One) True topLeft) 
-                    && (fold (\loc -> \acc -> acc && lookup loc board != One) True firstRow) 
-            Two -> 
+            One -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList firstRow)) 
+            Two -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList firstRow)) 
+            Three -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Three) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Three) True (Map.fromList firstRow))
+            Four -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Four) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Four) True (Map.fromList firstRow))
+            Five -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Five) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Five) True (Map.fromList firstRow))
+            Six -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Six) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Six) True (Map.fromList firstRow))
+            Seven -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Seven) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Seven) True (Map.fromList firstRow))
+            Eight -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Eight) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Eight) True (Map.fromList firstRow))
+            Nine -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Nine) True (Map.fromList topLeft)) 
+                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Nine) True (Map.fromList firstRow))
