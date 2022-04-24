@@ -106,9 +106,11 @@ solve input board =
         -- Otherwise, it calls helper again on a previous location to retry the values? Or changes a previous location 
         tryValue board Zero = tryValue board One 
         tryValue board value = case value of 
-            One -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList topLeft)) 
+            One -> if (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList topLeft)) 
                     && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList firstRow)) 
-            Two -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList topLeft)) 
+                    then -- place the value One in the board and continue 
+                    else tryValue board Two 
+            Two -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList topLeft)) -- these need to change according to the section of the board we're looking at
                     && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList firstRow)) 
             Three -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Three) True (Map.fromList topLeft)) 
                     && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Three) True (Map.fromList firstRow))
