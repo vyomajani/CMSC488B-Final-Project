@@ -27,8 +27,10 @@ import System.Random (Random(..), newStdGen)
 -- 5) Create a csv parser to parse sudoku inputs 
 -- 6) Make it all nxn
 
+-- Note: I'm using -- if it's a temporary comment / something to address, {--} if its something to keep that tells us what that section of code is doing 
 
--- Types 
+
+{- Types -} 
 
 type Loc = (Int, Int)
 
@@ -38,10 +40,10 @@ data Value = Zero | One | Two | Three | Four | Five | Six | Seven | Eight | Nine
 
 type Board = Map Loc Value
 
--- Original input board (do not modify Zeros)
+{- Original input board (do not modify Zeros) -} 
 type Input = Map Loc Value 
 
--- Constants 
+{- Constants -} 
 
 height, width :: Int 
 height = 9 
@@ -68,16 +70,37 @@ boxes = [[(x, y) | x <- [0..2], y <- [0..2]],
          [(x, y) | x <- [6..8], y <- [3..5]],
          [(x, y) | x <- [6..8], y <- [6..8]]]
 
-firstRow :: [Loc] 
-firstRow = [(0, y) | y <- [0..height - 1]]
+{- Boxes -}
 
-topLeft :: [Loc]
-topLeft = [(x, y) | x <- [0..2], y <- [0..2]]
+box1 :: [Loc]
+box1 = [(x, y) | x <- [0..2], y <- [0..2]]
 
---midLeft :: [Loc]
+box2 :: [Loc]
+box2 = [(x, y) | x <- [3..5], y <- [0..2]]
+
+box3 :: [Loc]
+box3 = [(x, y) | x <- [6..8], y <- [0..2]]
+
+box4 :: [Loc]
+box4 = [(x, y) | x <- [0..2], y <- [3..5]]
+
+box5 :: [Loc]
+box5 = [(x, y) | x <- [3..5], y <- [3..5]]
+
+box6 :: [Loc]
+box6 = [(x, y) | x <- [6..8], y <- [3..5]]
+
+box7 :: [Loc]
+box7 = [(x, y) | x <- [0..2], y <- [6..8]]
+
+box8 :: [Loc]
+box8 = [(x, y) | x <- [3..5], y <- [6..8]]
+
+box9 :: [Loc]
+box9 = [(x, y) | x <- [6..8], y <- [6..8]]
 
 -- should this be a parser? How are we creating sudoku boards? 
--- Creates empty sudoku board (All 0s)
+{- Creates empty sudoku board (All 0s) -} 
 initSudoku :: Board 
 initSudoku = helper locations initBoard
     where 
@@ -85,44 +108,147 @@ initSudoku = helper locations initBoard
         helper (h : t) board = helper t (Map.insert h Zero board)
         -- for the purposes of testing? Until we have a parser? 
 
--- Functions 
+{- Functions -}  
 
+{- Sudoku Solver -} 
 solve :: Board -> Board -> Board 
-solve input board = 
-    Map.fromList $ solveHelper (Map.toList input) (Map.toList board) locations -- locations :: [Loc]
+solve input board = solveHelper input board locations
     where 
+        {- Iterates through the locations to fill in sudoku board -}
+        solveHelper :: Board -> Board -> [Loc] -> Board 
         solveHelper input board [] = board 
         solveHelper input board (h : t) = 
-            case lookup h board of 
+            case Map.lookup h board of 
                 Nothing -> error "Should not happen, always initialize sudoku in initSudoku?"
-                -- If the board has Zero, then no value has been tried yet
-                Just Zero -> tryValue board One 
-                -- If the board has a value, but it originally had Zero there, double check that the value still works 
-                Just value -> if lookup h input == Just Zero then tryValue value 
+
+                {- If the board has Zero, then no value has been tried yet -} 
+                Just Zero -> solveHelper input (tryValue board h One) t
+
+                {- If the board has a value, but it originally had Zero there, double check that the value still works -} 
+                -- necessary clause for backtracking? HELP 
+                Just value -> if Map.lookup h input == Just Zero then solveHelper input (tryValue board h value) t
+
+                            {- If that value was given, skip it -}
                             else solveHelper input board t  
         
-        -- This function goes through every possible number that could go in the spot
-        -- If a number can go, it tries that
-        -- Otherwise, it calls helper again on a previous location to retry the values? Or changes a previous location 
-        tryValue board Zero = tryValue board One 
-        tryValue board value = case value of 
-            One -> if (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just One) True (Map.fromList firstRow)) 
-                    then -- place the value One in the board and continue 
-                    else tryValue board Two 
-            Two -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList topLeft)) -- these need to change according to the section of the board we're looking at
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Two) True (Map.fromList firstRow)) 
-            Three -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Three) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Three) True (Map.fromList firstRow))
-            Four -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Four) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Four) True (Map.fromList firstRow))
-            Five -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Five) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Five) True (Map.fromList firstRow))
-            Six -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Six) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Six) True (Map.fromList firstRow))
-            Seven -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Seven) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Seven) True (Map.fromList firstRow))
-            Eight -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Eight) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Eight) True (Map.fromList firstRow))
-            Nine -> (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Nine) True (Map.fromList topLeft)) 
-                    && (Map.foldr (\loc -> \acc -> acc && lookup loc board /= Just Nine) True (Map.fromList firstRow))
+        {- Go through every number to see if it can go in the given location on the board, 
+            backtracking if no number can go -}
+        tryValue :: Board -> Loc -> Value -> Board
+        tryValue board location Zero = tryValue board location One 
+        tryValue board location@(row, col) value = 
+
+            let rows = [(row, c) | c <- [0..width - 1]] in 
+            let cols = [(r, col) | r <- [0..height - 1]] in
+            let boxes = getBox location in
+
+            case value of 
+            One -> 
+
+                {- Place One in the board if it can be put in the given location -} 
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True cols)
+
+                then Map.insert location One board 
+
+                {- If it can't, try placing Two there -} 
+                else tryValue board location Two 
+
+            Two -> 
+
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True rows) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True cols)
+
+                then Map.insert location Two board
+
+                else tryValue board location Three 
+            
+            Three -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True cols)
+
+                then Map.insert location Three board
+
+                else tryValue board location Four 
+            
+            Four -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True cols)
+
+                then Map.insert location Four board
+
+                else tryValue board location Five 
+            
+            Five -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True cols)
+
+                then Map.insert location Five board
+
+                else tryValue board location Six 
+            
+            Six -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True cols)
+
+                then Map.insert location Six board
+
+                else tryValue board location Seven 
+            
+            Seven -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True cols)
+
+                then Map.insert location Seven board
+
+                else tryValue board location Eight  
+            
+            Eight -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True cols)
+
+                then Map.insert location Eight board
+
+                else tryValue board location Nine 
+            
+            Nine -> 
+                
+                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True boxes) 
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True rows)
+                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True cols)
+
+                then Map.insert location Nine board
+
+                else -- this is where we would need to backtrack and change a value we had previously written 
+                    -- Not sure how to do this logic tho
+                    -- calls helper again on a previous location to retry the values? Or changes a previous location?
+                    tryValue board location Nine -- temp, need to change 
+        
+        {- Returns which box a given location is in -}
+        getBox :: Loc -> [Loc]
+        getBox (row, col) = 
+            if row < 3 then 
+                if col < 3 then box1 
+                else if col < 6 then box2 
+                else box3 
+            else if row < 6 then 
+                if col < 3 then box4 
+                else if col < 6 then box5 
+                else box6
+            else 
+                if col < 3 then box7
+                else if col < 6 then box8 
+                else box9 
