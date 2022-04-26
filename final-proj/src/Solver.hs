@@ -122,18 +122,30 @@ solve input board = solveHelper input board locations
                 Nothing -> error "Should not happen, always initialize sudoku in initSudoku?"
 
                 {- If the board has Zero, then no value has been tried yet -} 
-                Just Zero -> solveHelper input (tryValue board h One) t
+                Just Zero -> case tryValue board h One of
+                                Zero -> solveHelper input (Map.insert h Zero board) t -- need to backtrack
+                                value -> solveHelper input (Map.insert h value board) t 
+
+                                -- this is where we would need to backtrack and change a value we had previously written 
+                                -- Not sure how to do this logic tho
+                                -- calls helper again on a previous location to retry the values? Or changes a previous location?
+
+                                -- what if we returned Values or locations instead of the whole board? 
+
 
                 {- If the board has a value, but it originally had Zero there, double check that the value still works -} 
-                -- necessary clause for backtracking? HELP 
-                Just value -> if Map.lookup h input == Just Zero then solveHelper input (tryValue board h value) t
+                -- is this a necessary clause for backtracking? HELP 
+                Just value -> if Map.lookup h input == Just Zero then 
+                                case tryValue board h value of
+                                    Zero -> solveHelper input (Map.insert h Zero board) t-- need to backtrack
+                                    value -> solveHelper input (Map.insert h value board) t 
 
                             {- If that value was given, skip it -}
                             else solveHelper input board t  
         
         {- Go through every number to see if it can go in the given location on the board, 
             backtracking if no number can go -}
-        tryValue :: Board -> Loc -> Value -> Board
+        tryValue :: Board -> Loc -> Value -> Value
         tryValue board location Zero = tryValue board location One 
         tryValue board location@(row, col) value = 
 
@@ -149,7 +161,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True cols)
 
-                then Map.insert location One board 
+                then One 
 
                 {- If it can't, try placing Two there -} 
                 else tryValue board location Two 
@@ -160,7 +172,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True rows) 
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True cols)
 
-                then Map.insert location Two board
+                then Two
 
                 else tryValue board location Three 
             
@@ -170,7 +182,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True cols)
 
-                then Map.insert location Three board
+                then Three
 
                 else tryValue board location Four 
             
@@ -180,7 +192,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True cols)
 
-                then Map.insert location Four board
+                then Four
 
                 else tryValue board location Five 
             
@@ -190,7 +202,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True cols)
 
-                then Map.insert location Five board
+                then Five
 
                 else tryValue board location Six 
             
@@ -200,7 +212,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True cols)
 
-                then Map.insert location Six board
+                then Six
 
                 else tryValue board location Seven 
             
@@ -210,7 +222,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True cols)
 
-                then Map.insert location Seven board
+                then Seven
 
                 else tryValue board location Eight  
             
@@ -220,7 +232,7 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True cols)
 
-                then Map.insert location Eight board
+                then Eight
 
                 else tryValue board location Nine 
             
@@ -230,12 +242,9 @@ solve input board = solveHelper input board locations
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True rows)
                 && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True cols)
 
-                then Map.insert location Nine board
+                then Nine
 
-                else -- this is where we would need to backtrack and change a value we had previously written 
-                    -- Not sure how to do this logic tho
-                    -- calls helper again on a previous location to retry the values? Or changes a previous location?
-                    tryValue board location Nine -- temp, need to change 
+                else Zero
         
         {- Returns which box a given location is in -}
         getBox :: Loc -> [Loc]
