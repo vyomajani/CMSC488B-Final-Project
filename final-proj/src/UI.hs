@@ -68,10 +68,10 @@ main = do
 handleEvent :: Game -> BrickEvent Name Tick -> EventM Name (Next Game)
 handleEvent g (AppEvent Tick)                       = continue $ step g -- Step Time
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt g            -- Quit
--- handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ move North g
--- handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ move South g
--- handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ move East g
--- handleEvent g (VtyEvent (V.EvKey V.KLeft []))       = continue $ move West g
+handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ move North g
+handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ move South g
+handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ move East g
+handleEvent g (VtyEvent (V.EvKey V.KLeft []))       = continue $ move West g
 -- handleEvent g (VtyEvent (V.EvKey V.KEnter []))      = continue $ register g -- Enter Key should test board if full, or give hint if not full? 
 -- handleEvent g (VtyEvent (V.EvKey (V.KChar '1') [])) = continue $ turn North g
 handleEvent g _                                     = continue g
