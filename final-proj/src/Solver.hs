@@ -123,8 +123,8 @@ next Eight = Nine
 next Nine = Zero 
 
 {- Sudoku Solver -} 
-solve :: Board -> Board -> Board 
-solve input board = case solveHelper input board locations of 
+solve :: Board -> Board 
+solve board = case solveHelper board board locations of 
     Nothing -> initSudoku
     Just b -> b
     where 
@@ -286,6 +286,8 @@ solve input board = case solveHelper input board locations of
                 else if col < 6 then box8 
                 else box9
 
+{- Tests -}
+
 -- Sample Boards, temporary?
 -- Test with:
 -- solve sampleSudoku<i> sampleSudoku<i>
@@ -346,20 +348,6 @@ sampleSudoku6 =
                   ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),
                   ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
 
-                  {- 
-
-                  0 0 0 2 6 9 7 8 1
-                  0 0 0 5 7 1 4 9 3 
-                  0 0 0 8 3 4 5 6 2
-                  8 2 6 0 0 0 3 4 7 
-                  3 7 4 0 0 0 9 1 5 
-                  9 5 1 0 0 0 6 2 8 
-                  5 1 9 3 2 6 0 0 0 
-                  2 4 8 9 5 7 0 0 0 
-                  7 6 3 4 1 8 0 0 0 
-                  
-                  -}
-
 -- This one breaks, its exactly the same as the last one except its missing (0,6)
 sampleSudoku7 :: Board
 sampleSudoku7 = 
@@ -372,6 +360,8 @@ sampleSudoku7 =
                   ((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Zero),((6,7),Zero),((6,8),Zero),
                   ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),
                   ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
+
+{- Debugging Tools -}
 
 prettyPrint :: Board -> IO ()
 prettyPrint board = helper 0 (Map.toList board) 
@@ -419,3 +409,27 @@ valueConverter Seven = "7"
 valueConverter Eight = "8"
 valueConverter Nine = "9"
 
+
+
+{- 
+
+Sudoku Rows / Cols
+
+00 01 02  03 04 05  06 07 08
+10 11 12  13 14 15  16 17 18
+20 21 22  23 24 25  26 27 28
+
+30 31 32  33 34 35  36 37 38
+40 41 42  43 44 45  46 47 48
+50 51 52  53 54 55  56 57 58
+
+60 61 62  63 64 65  66 67 68
+70 71 72  73 74 75  76 77 78
+80 81 82  83 84 85  86 87 88
+
+IE, Boxes
+1 2 3 
+4 5 6
+7 8 9
+
+-}
