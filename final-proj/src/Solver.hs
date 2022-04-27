@@ -294,10 +294,28 @@ solve input board = case solveHelper input board locations of
 
 -- Almost complete sudoku board, missing top left value
 completeSampleSudoku  :: Board
-completeSampleSudoku = Map.fromList [((0,0),Four),((0,1),Three),((0,2),Five),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Seven),((0,7),Eight),((0,8),One),((1,0),Six),((1,1),Eight),((1,2),Two),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),((2,0),One),((2,1),Nine),((2,2),Seven),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),One),((3,4),Nine),((3,5),Five),((3,6),Three),((3,7),Four),((3,8),Seven),((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Six),((4,4),Eight),((4,5),Two),((4,6),Nine),((4,7),One),((4,8),Five),((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Seven),((5,4),Four),((5,5),Three),((5,6),Six),((5,7),Two),((5,8),Eight),((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Eight),((6,7),Seven),((6,8),Four),((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),One),((7,7),Three),((7,8),Six),((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Two),((8,7),Five),((8,8),Nine)]
+completeSampleSudoku = 
+    Map.fromList [((0,0),Four),((0,1),Three),((0,2),Five),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Seven),((0,7),Eight),((0,8),One),
+                  ((1,0),Six),((1,1),Eight),((1,2),Two),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),
+                  ((2,0),One),((2,1),Nine),((2,2),Seven),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),
+                  ((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),One),((3,4),Nine),((3,5),Five),((3,6),Three),((3,7),Four),((3,8),Seven),
+                  ((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Six),((4,4),Eight),((4,5),Two),((4,6),Nine),((4,7),One),((4,8),Five),
+                  ((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Seven),((5,4),Four),((5,5),Three),((5,6),Six),((5,7),Two),((5,8),Eight),
+                  ((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Eight),((6,7),Seven),((6,8),Four),
+                  ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),One),((7,7),Three),((7,8),Six),
+                  ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Two),((8,7),Five),((8,8),Nine)]
 
 sampleSudoku1  :: Board
-sampleSudoku1 = Map.fromList [((0,0),Zero),((0,1),Three),((0,2),Five),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Seven),((0,7),Eight),((0,8),One),((1,0),Six),((1,1),Eight),((1,2),Two),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),((2,0),One),((2,1),Nine),((2,2),Seven),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),One),((3,4),Nine),((3,5),Five),((3,6),Three),((3,7),Four),((3,8),Seven),((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Six),((4,4),Eight),((4,5),Two),((4,6),Nine),((4,7),One),((4,8),Five),((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Seven),((5,4),Four),((5,5),Three),((5,6),Six),((5,7),Two),((5,8),Eight),((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Eight),((6,7),Seven),((6,8),Four),((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),One),((7,7),Three),((7,8),Six),((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Two),((8,7),Five),((8,8),Nine)]
+sampleSudoku1 = 
+    Map.fromList [((0,0),Zero),((0,1),Three),((0,2),Five),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Seven),((0,7),Eight),((0,8),One),
+                  ((1,0),Six),((1,1),Eight),((1,2),Two),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),
+                  ((2,0),One),((2,1),Nine),((2,2),Seven),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),
+                  ((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),One),((3,4),Nine),((3,5),Five),((3,6),Three),((3,7),Four),((3,8),Seven),
+                  ((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Six),((4,4),Eight),((4,5),Two),((4,6),Nine),((4,7),One),((4,8),Five),
+                  ((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Seven),((5,4),Four),((5,5),Three),((5,6),Six),((5,7),Two),((5,8),Eight),
+                  ((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Eight),((6,7),Seven),((6,8),Four),
+                  ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),One),((7,7),Three),((7,8),Six),
+                  ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Two),((8,7),Five),((8,8),Nine)]
 
 -- Almost complete sudoku board, missing bottom right value
 sampleSudoku2  :: Board
@@ -317,8 +335,87 @@ sampleSudoku5 = Map.fromList [((0,0),Zero),((0,1),Zero),((0,2),Zero),((0,3),Two)
 
 -- Missing diagonal 3x3 squares
 sampleSudoku6  :: Board
-sampleSudoku6 = Map.fromList [((0,0),Zero),((0,1),Zero),((0,2),Zero),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Seven),((0,7),Eight),((0,8),One),((1,0),Zero),((1,1),Zero),((1,2),Zero),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),((2,0),Zero),((2,1),Zero),((2,2),Zero),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),Zero),((3,4),Zero),((3,5),Zero),((3,6),Three),((3,7),Four),((3,8),Seven),((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Zero),((4,4),Zero),((4,5),Zero),((4,6),Nine),((4,7),One),((4,8),Five),((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Zero),((5,4),Zero),((5,5),Zero),((5,6),Six),((5,7),Two),((5,8),Eight),((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Zero),((6,7),Zero),((6,8),Zero),((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
+sampleSudoku6 = 
+    Map.fromList [((0,0),Zero),((0,1),Zero),((0,2),Zero),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Seven),((0,7),Eight),((0,8),One),
+                  ((1,0),Zero),((1,1),Zero),((1,2),Zero),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),
+                  ((2,0),Zero),((2,1),Zero),((2,2),Zero),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),
+                  ((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),Zero),((3,4),Zero),((3,5),Zero),((3,6),Three),((3,7),Four),((3,8),Seven),
+                  ((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Zero),((4,4),Zero),((4,5),Zero),((4,6),Nine),((4,7),One),((4,8),Five),
+                  ((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Zero),((5,4),Zero),((5,5),Zero),((5,6),Six),((5,7),Two),((5,8),Eight),
+                  ((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Zero),((6,7),Zero),((6,8),Zero),
+                  ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),
+                  ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
+
+                  {- 
+
+                  0 0 0 2 6 9 7 8 1
+                  0 0 0 5 7 1 4 9 3 
+                  0 0 0 8 3 4 5 6 2
+                  8 2 6 0 0 0 3 4 7 
+                  3 7 4 0 0 0 9 1 5 
+                  9 5 1 0 0 0 6 2 8 
+                  5 1 9 3 2 6 0 0 0 
+                  2 4 8 9 5 7 0 0 0 
+                  7 6 3 4 1 8 0 0 0 
+                  
+                  -}
 
 -- This one breaks, its exactly the same as the last one except its missing (0,6)
 sampleSudoku7 :: Board
-sampleSudoku7 = Map.fromList [((0,0),Zero),((0,1),Zero),((0,2),Zero),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Zero),((0,7),Eight),((0,8),One),((1,0),Zero),((1,1),Zero),((1,2),Zero),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),((2,0),Zero),((2,1),Zero),((2,2),Zero),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),Zero),((3,4),Zero),((3,5),Zero),((3,6),Three),((3,7),Four),((3,8),Seven),((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Zero),((4,4),Zero),((4,5),Zero),((4,6),Nine),((4,7),One),((4,8),Five),((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Zero),((5,4),Zero),((5,5),Zero),((5,6),Six),((5,7),Two),((5,8),Eight),((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Zero),((6,7),Zero),((6,8),Zero),((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
+sampleSudoku7 = 
+    Map.fromList [((0,0),Zero),((0,1),Zero),((0,2),Zero),((0,3),Two),((0,4),Six),((0,5),Nine),((0,6),Zero),((0,7),Eight),((0,8),One),
+                  ((1,0),Zero),((1,1),Zero),((1,2),Zero),((1,3),Five),((1,4),Seven),((1,5),One),((1,6),Four),((1,7),Nine),((1,8),Three),
+                  ((2,0),Zero),((2,1),Zero),((2,2),Zero),((2,3),Eight),((2,4),Three),((2,5),Four),((2,6),Five),((2,7),Six),((2,8),Two),
+                  ((3,0),Eight),((3,1),Two),((3,2),Six),((3,3),Zero),((3,4),Zero),((3,5),Zero),((3,6),Three),((3,7),Four),((3,8),Seven),
+                  ((4,0),Three),((4,1),Seven),((4,2),Four),((4,3),Zero),((4,4),Zero),((4,5),Zero),((4,6),Nine),((4,7),One),((4,8),Five),
+                  ((5,0),Nine),((5,1),Five),((5,2),One),((5,3),Zero),((5,4),Zero),((5,5),Zero),((5,6),Six),((5,7),Two),((5,8),Eight),
+                  ((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Zero),((6,7),Zero),((6,8),Zero),
+                  ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),
+                  ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
+
+prettyPrint :: Board -> IO ()
+prettyPrint board = helper 0 (Map.toList board) 
+    where 
+        helper _ [] = print ""
+        helper i ((_, v1) : (_, v2) : (_, v3) : (_, v4) : (_, v5) : (_, v6) : (_, v7) : (_, v8) : (_, v9) : t) = 
+            if i == 2 || i == 5 then do 
+            putStr (valueConverter v1)
+            putStr (valueConverter v2)
+            putStr (valueConverter v3)
+            putStr " "
+            putStr (valueConverter v4)
+            putStr (valueConverter v5)
+            putStr (valueConverter v6)
+            putStr " "
+            putStr (valueConverter v7)
+            putStr (valueConverter v8)
+            putStrLn (valueConverter v9)
+            putStr "\n"
+            helper (i + 1) t 
+            else do 
+            putStr (valueConverter v1)
+            putStr (valueConverter v2)
+            putStr (valueConverter v3)
+            putStr " "
+            putStr (valueConverter v4)
+            putStr (valueConverter v5)
+            putStr (valueConverter v6)
+            putStr " "
+            putStr (valueConverter v7)
+            putStr (valueConverter v8)
+            putStrLn (valueConverter v9)
+            helper (i + 1) t 
+        helper _ _ = error "Should not happen, boards should be pretty"
+
+valueConverter :: Value -> String 
+valueConverter Zero = "0" 
+valueConverter One = "1" 
+valueConverter Two = "2"
+valueConverter Three = "3"
+valueConverter Four = "4"
+valueConverter Five = "5"
+valueConverter Six = "6"
+valueConverter Seven = "7" 
+valueConverter Eight = "8"
+valueConverter Nine = "9"
+
