@@ -4,9 +4,9 @@ module UI where
 import Control.Monad (forever, void)
 import Control.Monad.IO.Class (liftIO)
 import Control.Concurrent (threadDelay, forkIO)
-import Data.Maybe (fromMaybe)
 
 import Game
+import Solver
 
 import Brick
   ( App(..), AttrMap, BrickEvent(..), EventM, Next, Widget
@@ -16,15 +16,18 @@ import Brick
   , padRight, padLeft, padTop, padAll, Padding(..)
   , withBorderStyle
   , str
-  , attrMap, withAttr, emptyWidget, AttrName, on, fg
+  , attrMap, withAttr, emptyWidget, AttrName, on, fg, bg
   , (<+>)
   )
 import Brick.BChan (newBChan, writeBChan)
 import qualified Brick.Widgets.Border as B
 import qualified Brick.Widgets.Border.Style as BS
 import qualified Brick.Widgets.Center as C
-import Control.Lens ((^.))
+import Control.Lens ((^.), at)
 import qualified Graphics.Vty as V
+
+import Data.Maybe (fromMaybe)
+import Data.List  (intersperse)
 
 -- Types
 
@@ -69,8 +72,8 @@ handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ move North g
 handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ move South g
 handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ move East g
 handleEvent g (VtyEvent (V.EvKey V.KLeft []))       = continue $ move West g
-handleEvent g (VtyEvent (V.EvKey V.KEnter []))      = continue $ register g -- Enter Key should test board if full, or give hint if not full? 
-handleEvent g (VtyEvent (V.EvKey (V.KChar '1') [])) = continue $ turn North g
+-- handleEvent g (VtyEvent (V.EvKey V.KEnter []))      = continue $ register g -- Enter Key should test board if full, or give hint if not full? 
+-- handleEvent g (VtyEvent (V.EvKey (V.KChar '1') [])) = continue $ turn North g
 handleEvent g _                                     = continue g
 
 -- Drawing
@@ -78,15 +81,12 @@ handleEvent g _                                     = continue g
 drawUI :: Game -> [Widget Name]
 drawUI g = [ withBorderStyle BS.unicodeBold 
              $ B.borderWithLabel (str "Sudoku")
-             $ drawGrid g 
-             $ C.hCenter
-             $ padAll 1
-             $ str (show (g ^. placeholder)) ]
+             $ drawGrid g ]
 
-drawGameOver :: Game -> Widget Name
-drawGameOver g
-  | g ^. done = str "Game Over!"
-  | otherwise = emptyWidget
+-- drawGameOver :: Game -> Widget Name
+-- drawGameOver g
+--   | g ^. done = str "Game Over!"
+--   | otherwise = emptyWidget
 {-
   let children = map (\g' -> (minimax g' (g ^. player)), g' ^. cursor) (moves g (g ^. player)) in
   str (show (snd (maximum children)))
@@ -95,7 +95,7 @@ drawGameOver g
 drawGrid :: Game -> Widget Name
 drawGrid g = vBox rows
   where
-    rows    = intersperse (str (replicate 5 '—')) [hBox $ cells y | y <- [0..height-1]]
+    rows    = intersperse (str (replicate 17 '—')) [hBox $ cells y | y <- [0..height-1]]
     cells y = intersperse (str "|") [drawCell x y   | x <- [0..width-1]]
     drawCell x y =
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in
@@ -104,7 +104,7 @@ drawGrid g = vBox rows
             Just p  -> str (show p)
 
 theMap :: AttrMap
-theMap = attrMap V.defAttr [cursorAttr, V.bg V.red] -- change these params if needed 
+theMap = attrMap V.defAttr [(cursorAttr, bg V.red)]
 
 cursorAttr :: AttrName 
 cursorAttr = "cursorAttr"
