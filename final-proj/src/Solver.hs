@@ -110,41 +110,64 @@ initSudoku = helper locations initBoard
 
 {- Functions -}  
 
+next :: Value -> Value 
+next Zero = One
+next One = Two 
+next Two = Three 
+next Three = Four 
+next Four = Five 
+next Five = Six 
+next Six = Seven
+next Seven = Eight 
+next Eight = Nine 
+next Nine = Zero 
+
 {- Sudoku Solver -} 
 solve :: Board -> Board -> Board 
-solve input board = solveHelper input board locations
+solve input board = case solveHelper input board locations of 
+    Nothing -> initSudoku
+    Just b -> b
     where 
         {- Iterates through the locations to fill in sudoku board -}
-        solveHelper :: Board -> Board -> [Loc] -> Board 
-        solveHelper input board [] = board 
+        solveHelper :: Board -> Board -> [Loc] -> Maybe Board 
+        solveHelper input board [] = Just board 
         solveHelper input board (h : t) = 
             case Map.lookup h board of 
                 Nothing -> error "Should not happen, always initialize sudoku in initSudoku?"
 
                 {- If the board has Zero, then no value has been tried yet -} 
                 Just Zero -> case tryValue board h One of
-                                Zero -> solveHelper input (Map.insert h Zero board) t -- need to backtrack
-                                value -> solveHelper input (Map.insert h value board) t 
 
-                                -- this is where we would need to backtrack and change a value we had previously written 
-                                -- Not sure how to do this logic tho
-                                -- calls helper again on a previous location to retry the values? Or changes a previous location?
+                                {- If we can't place any value in the board, return Nothing to initiate backtracking -}
+                                Zero -> Nothing 
 
-                                -- what if we returned Values or locations instead of the whole board? 
+                                {- If we can, try placing a value in the next location -}
+                                value -> case solveHelper input (Map.insert h value board) t of 
 
+                                    {- If we can't place a value in the next location, try a new value for the current location (backtrack) -}
+                                    Nothing -> solveHelper input (Map.insert h value board) (h : t)
 
-                {- If the board has a value, but it originally had Zero there, double check that the value still works -} 
-                -- is this a necessary clause for backtracking? HELP 
+                                    Just b -> Just b 
+
+                {- If the board has a value, but it originally had Zero there, try a new value (part of backtracking) -} 
                 Just value -> if Map.lookup h input == Just Zero then 
-                                case tryValue board h value of
-                                    Zero -> solveHelper input (Map.insert h Zero board) t-- need to backtrack
-                                    value -> solveHelper input (Map.insert h value board) t 
+                                case tryValue board h (next value) of
+
+                                    {- If we can't place any value in the board, return Nothing to initiate backtracking -}
+                                    Zero -> Nothing 
+
+                                    {- If we can, try placing a value in the next location -}
+                                    value -> case solveHelper input (Map.insert h value board) t of 
+
+                                        {- If we can't place a value in the next location, try a new value for the current location (backtrack) -}
+                                        Nothing -> solveHelper input (Map.insert h value board) (h : t)
+
+                                        Just b -> Just b
 
                             {- If that value was given, skip it -}
                             else solveHelper input board t  
         
-        {- Go through every number to see if it can go in the given location on the board, 
-            backtracking if no number can go -}
+        {- Go through every number to see if it can go in the given location on the board -}
         tryValue :: Board -> Loc -> Value -> Value
         tryValue board location Zero = tryValue board location One 
         tryValue board location@(row, col) value = 
@@ -244,6 +267,7 @@ solve input board = solveHelper input board locations
 
                 then Nine
 
+                {- If no number works, return Zero to initiate backtracking -}
                 else Zero
         
         {- Returns which box a given location is in -}
