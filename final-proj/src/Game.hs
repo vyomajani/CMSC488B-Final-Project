@@ -73,14 +73,19 @@ move East g = g & cursor . _1 %~ (\x -> (x + 1) `mod` width)
 move West g = g & cursor . _1 %~ (\x -> (x - 1) `mod` width)
 
 -- Upon hitting Enter, checks the solution 
--- register :: Game -> Game 
--- register g 
---   | g ^. full = -- check solution 
---   | otherwise = -- display that not full (could also drop a hint?)
+register :: Value -> Game -> Game 
+register val g = g & board  %~ Map.insert (g ^. cursor) val
 
-  -- | g ^. full = g -- if the board is full, don't place an X or an O
-  -- | isJust (g ^. board . at (g ^. cursor)) = g -- If the location has a value already, don't place 
-  -- | otherwise = g & board . at (g ^. cursor) %~ Map.insertWith (flip const) (g ^. cursor) (g ^. player) -- more stuff 
+-- register :: Game -> Game
+-- register g
+--   | g ^. done = g
+--   | isJust (g ^. board . at (g ^. cursor)) = g
+--   | otherwise = g & board  %~ Map.insert (g ^. cursor) (g ^. player)
+--                   & player %~ next
+
+-- need to initialize remaining cells with 0s before calling solve
+showSolution :: Game -> Game 
+showSolution g = g & board %~ Solver.solve 
 
 
 -- Checks if the board is full 

@@ -20,8 +20,8 @@ import System.Random (Random(..), newStdGen)
 --import Game 
 
 -- Coding Plan
--- 1) Write out solve function to solve an input sudoku board 
--- 2) Create basic UI for user to put numbers into 
+-- 1) Write out solve function to solve an input sudoku board (need to debug)
+-- 2) DONE: Create basic UI for user to put numbers into 
 -- 3) Incorporate solution into UI 
 -- 4) Create QuickCheck for checking sudoku solver 
 -- 5) Create a csv parser to parse sudoku inputs 
@@ -122,9 +122,18 @@ next Seven = Eight
 next Eight = Nine 
 next Nine = Zero 
 
+fillInZeroes :: Board -> Board 
+fillInZeroes board = helper locations board 
+    where 
+        helper [] board = board 
+        helper (h : t) board = 
+            case Map.lookup h board of 
+                Nothing -> helper t (Map.insert h Zero board)
+                _ -> helper t board 
+
 {- Sudoku Solver -} 
 solve :: Board -> Board 
-solve board = case solveHelper board board locations of 
+solve board = let board = fillInZeroes board in case solveHelper board board locations of 
     Nothing -> initSudoku
     Just b -> b
     where 
@@ -180,95 +189,52 @@ solve board = case solveHelper board board locations of
             One -> 
 
                 {- Place One in the board if it can be put in the given location -} 
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just One) True cols)
-
-                then One 
+                if checkNotExists rows cols boxes One then One 
 
                 {- If it can't, try placing Two there -} 
                 else tryValue board location Two 
 
             Two -> 
-
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True rows) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Two) True cols)
-
-                then Two
-
+                if checkNotExists rows cols boxes Two then Two
                 else tryValue board location Three 
             
             Three -> 
-                
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Three) True cols)
-
-                then Three
-
+                if checkNotExists rows cols boxes Three then Three
                 else tryValue board location Four 
             
             Four -> 
-                
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Four) True cols)
-
-                then Four
-
+                if checkNotExists rows cols boxes Four then Four
                 else tryValue board location Five 
             
             Five -> 
-                
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Five) True cols)
-
-                then Five
-
+                if checkNotExists rows cols boxes Five then Five
                 else tryValue board location Six 
             
             Six -> 
-                
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Six) True cols)
-
-                then Six
-
+                if checkNotExists rows cols boxes Six then Six
                 else tryValue board location Seven 
             
             Seven -> 
-                
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Seven) True cols)
-
-                then Seven
-
+                if checkNotExists rows cols boxes Seven then Seven
                 else tryValue board location Eight  
             
             Eight -> 
-                
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Eight) True cols)
-
-                then Eight
-
+                if checkNotExists rows cols boxes Eight then Eight
                 else tryValue board location Nine 
             
             Nine -> 
                 
-                if (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True boxes) 
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True rows)
-                && (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just Nine) True cols)
-
-                then Nine
+                if checkNotExists rows cols boxes Nine then Nine
 
                 {- If no number works, return Zero to initiate backtracking -}
                 else Zero
+
+        {- Checks if the value exists in the row, column, or box -}
+        checkNotExists :: [Loc] -> [Loc] -> [Loc] -> Value -> Bool 
+        checkNotExists rows cols boxes val = 
+                (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True boxes) && 
+                (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True rows) &&
+                (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True cols)
         
         {- Returns which box a given location is in -}
         getBox :: Loc -> [Loc]

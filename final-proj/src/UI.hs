@@ -72,8 +72,16 @@ handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ move North g
 handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ move South g
 handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ move East g
 handleEvent g (VtyEvent (V.EvKey V.KLeft []))       = continue $ move West g
--- handleEvent g (VtyEvent (V.EvKey V.KEnter []))      = continue $ register g -- Enter Key should test board if full, or give hint if not full? 
--- handleEvent g (VtyEvent (V.EvKey (V.KChar '1') [])) = continue $ turn North g
+handleEvent g (VtyEvent (V.EvKey V.KEnter []))      = continue $ showSolution g -- Enter Key should test board if full, or give hint if not full? 
+handleEvent g (VtyEvent (V.EvKey (V.KChar '1') [])) = continue $ register One g 
+handleEvent g (VtyEvent (V.EvKey (V.KChar '2') [])) = continue $ register Two g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '3') [])) = continue $ register Three g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '4') [])) = continue $ register Four g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '5') [])) = continue $ register Five g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '6') [])) = continue $ register Six g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '7') [])) = continue $ register Seven g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '8') [])) = continue $ register Eight g
+handleEvent g (VtyEvent (V.EvKey (V.KChar '9') [])) = continue $ register Nine g
 handleEvent g _                                     = continue g
 
 -- Drawing
@@ -101,7 +109,7 @@ drawGrid g = vBox rows
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in
       f $ case g ^. board . at (x,y) of
             Nothing -> str " "
-            Just p  -> str (show p)
+            Just p  -> str (Solver.valueConverter p)
 
 theMap :: AttrMap
 theMap = attrMap V.defAttr [(cursorAttr, bg V.red)]
