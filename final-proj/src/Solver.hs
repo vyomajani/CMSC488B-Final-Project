@@ -133,7 +133,7 @@ fillInZeroes board = helper locations board
 
 {- Sudoku Solver -} 
 solve :: Board -> Board 
-solve board = let board = fillInZeroes board in case solveHelper board board locations of 
+solve board = let filledBoard = fillInZeroes board in case solveHelper filledBoard filledBoard locations of
     Nothing -> initSudoku
     Just b -> b
     where 
@@ -189,49 +189,49 @@ solve board = let board = fillInZeroes board in case solveHelper board board loc
             One -> 
 
                 {- Place One in the board if it can be put in the given location -} 
-                if checkNotExists rows cols boxes One then One 
+                if checkNotExists board rows cols boxes One then One 
 
                 {- If it can't, try placing Two there -} 
                 else tryValue board location Two 
 
             Two -> 
-                if checkNotExists rows cols boxes Two then Two
+                if checkNotExists board rows cols boxes Two then Two
                 else tryValue board location Three 
             
             Three -> 
-                if checkNotExists rows cols boxes Three then Three
+                if checkNotExists board rows cols boxes Three then Three
                 else tryValue board location Four 
             
             Four -> 
-                if checkNotExists rows cols boxes Four then Four
+                if checkNotExists board rows cols boxes Four then Four
                 else tryValue board location Five 
             
             Five -> 
-                if checkNotExists rows cols boxes Five then Five
+                if checkNotExists board rows cols boxes Five then Five
                 else tryValue board location Six 
             
             Six -> 
-                if checkNotExists rows cols boxes Six then Six
+                if checkNotExists board rows cols boxes Six then Six
                 else tryValue board location Seven 
             
             Seven -> 
-                if checkNotExists rows cols boxes Seven then Seven
+                if checkNotExists board rows cols boxes Seven then Seven
                 else tryValue board location Eight  
             
             Eight -> 
-                if checkNotExists rows cols boxes Eight then Eight
+                if checkNotExists board rows cols boxes Eight then Eight
                 else tryValue board location Nine 
             
             Nine -> 
                 
-                if checkNotExists rows cols boxes Nine then Nine
+                if checkNotExists board rows cols boxes Nine then Nine
 
                 {- If no number works, return Zero to initiate backtracking -}
                 else Zero
 
         {- Checks if the value exists in the row, column, or box -}
-        checkNotExists :: [Loc] -> [Loc] -> [Loc] -> Value -> Bool 
-        checkNotExists rows cols boxes val = 
+        checkNotExists :: Board -> [Loc] -> [Loc] -> [Loc] -> Value -> Bool 
+        checkNotExists board rows cols boxes val = 
                 (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True boxes) && 
                 (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True rows) &&
                 (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True cols)
@@ -239,17 +239,17 @@ solve board = let board = fillInZeroes board in case solveHelper board board loc
         {- Returns which box a given location is in -}
         getBox :: Loc -> [Loc]
         getBox (row, col) = 
-            if row < 3 then 
-                if col < 3 then box1 
-                else if col < 6 then box2 
+            if col < 3 then 
+                if row < 3 then box1 
+                else if row < 6 then box2 
                 else box3 
-            else if row < 6 then 
-                if col < 3 then box4 
-                else if col < 6 then box5 
+            else if col < 6 then 
+                if row < 3 then box4 
+                else if row < 6 then box5 
                 else box6
             else 
-                if col < 3 then box7
-                else if col < 6 then box8 
+                if row < 3 then box7
+                else if row < 6 then box8 
                 else box9
 
 {- Tests -}
