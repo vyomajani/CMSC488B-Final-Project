@@ -20,11 +20,11 @@ import System.Random (Random(..), newStdGen)
 --import Game 
 
 -- Coding Plan
--- 1) Write out solve function to solve an input sudoku board (need to debug)
+-- 1) DONE: Write out solve function to solve an input sudoku board 
 -- 2) DONE: Create basic UI for user to put numbers into 
--- 3) Incorporate solution into UI 
+-- 3) Incorporate solution into UI - still need to include original unchanged input board 
 -- 4) Create QuickCheck for checking sudoku solver 
--- 5) Create a csv parser to parse sudoku inputs 
+-- 5) DONE: Create a csv parser to parse sudoku inputs 
 -- 6) Make it all nxn
 
 -- Note: I'm using -- if it's a temporary comment / something to address, {--} if its something to keep that tells us what that section of code is doing 

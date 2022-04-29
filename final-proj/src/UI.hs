@@ -107,9 +107,12 @@ drawGrid g = vBox rows
     cells y = intersperse (str "|") [drawCell x y   | x <- [0..width-1]]
     drawCell x y =
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in
-      f $ case g ^. board . at (x,y) of
+      f $ case g ^. board . at (y,x) of
             Nothing -> str " "
-            Just p  -> str (Solver.valueConverter p)
+            Just Zero -> str " "
+            Just p -> str (Solver.valueConverter p)
+
+            -- ISSUE: When I put sampleSudoku7 on the UI, (6,0) is empty instead of (0,6)
 
 theMap :: AttrMap
 theMap = attrMap V.defAttr [(cursorAttr, bg V.red)]
