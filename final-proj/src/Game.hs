@@ -90,7 +90,7 @@ register val g = g & board  %~ Map.insert (g ^. cursor) val
 {- Shows the solution from the original input board upon hitting Enter,
    using input board in case user's solution is wrong -}
 showSolution :: Game -> Game 
-showSolution g = g & input %~ Solver.solve -- need to reassign board as well 
+showSolution g = g & board .~ (Solver.solve $ g ^. input) 
 
 
 -- Checks if the board is full 

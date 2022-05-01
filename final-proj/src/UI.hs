@@ -107,7 +107,7 @@ drawGrid g = vBox rows
     cells y = intersperse (str "|") [drawCell x y   | x <- [0..width-1]]
     drawCell x y =
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in
-      f $ case g ^. board . at (y,x) of
+      f $ case g ^. board . at (x,y) of -- currently (x,y) is (y,x), need to fix (see issue below)
             Nothing -> str " "
             Just Zero -> str " "
             Just p -> str (Solver.valueConverter p)
