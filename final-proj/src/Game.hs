@@ -71,10 +71,10 @@ initGame = let b = boardConverter "0,0,0,2,6,9,0,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3
 
 {- Move cursor around board -}
 move :: Direction -> Game -> Game 
-move North g = g & cursor . _2 %~ (\y -> (y - 1) `mod` height) 
-move South g = g & cursor . _2 %~ (\y -> (y + 1) `mod` height)
-move East g = g & cursor . _1 %~ (\x -> (x + 1) `mod` width)
-move West g = g & cursor . _1 %~ (\x -> (x - 1) `mod` width)
+move North g = g & cursor . _1 %~ (\x -> (x - 1) `mod` height)
+move South g = g & cursor . _1 %~ (\x -> (x + 1) `mod` height)
+move East g = g & cursor . _2 %~ (\y -> (y + 1) `mod` width)
+move West g = g & cursor . _2 %~ (\y -> (y - 1) `mod` width)
 
 {- Inputs a value into the playable board -}
 register :: Value -> Game -> Game 
