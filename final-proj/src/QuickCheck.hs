@@ -62,4 +62,17 @@ module QuickCheck where
                         (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True rows) &&
                         (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True cols) && (helper board t)
 
+    prop_valid_location :: Loc -> Board -> Bool 
+    prop_valid_location (row, col) board = 
+        let rows = [(row, c) | c <- [0..width - 1]] in 
+        let cols = [(r, col) | r <- [0..height - 1]] in
+        let boxes = getBox (row, col) in
+        let v = Map.lookup (row, col) board in 
+        case v of 
+            Nothing -> error "Should not happen"
+            Just val -> 
+                (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True boxes) && 
+                (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True rows) &&
+                (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True cols)
+
     
