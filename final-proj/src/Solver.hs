@@ -22,7 +22,7 @@ import System.Random (Random(..), newStdGen)
 -- Coding Plan
 -- 1) DONE: Write out solve function to solve an input sudoku board 
 -- 2) DONE: Create basic UI for user to put numbers into 
--- 3) Incorporate solution into UI - still need to include original unchanged input board 
+-- 3) Incorporate solution into UI ((0,6) (6,0) bug)
 -- 4) Create QuickCheck for checking sudoku solver 
 -- 5) DONE: Create a csv parser to parse sudoku inputs 
 -- 6) Make it all nxn
@@ -34,9 +34,9 @@ import System.Random (Random(..), newStdGen)
 
 type Loc = (Int, Int)
 
-data Value = Zero | One | Two | Three | Four | Five | Six | Seven | Eight | Nine -- 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+{- Zero means empty -}
+data Value = Zero | One | Two | Three | Four | Five | Six | Seven | Eight | Nine 
  deriving (Eq, Show)
- -- 0 means it hasn't been filled in yet? 
 
 type Board = Map Loc Value
 
@@ -130,6 +130,22 @@ fillInZeroes board = helper locations board
             case Map.lookup h board of 
                 Nothing -> helper t (Map.insert h Zero board)
                 _ -> helper t board 
+
+{- Returns which box a given location is in -}
+getBox :: Loc -> [Loc]
+getBox (row, col) = 
+    if col < 3 then 
+        if row < 3 then box1 
+        else if row < 6 then box2 
+        else box3 
+    else if col < 6 then 
+        if row < 3 then box4 
+        else if row < 6 then box5 
+        else box6
+    else 
+        if row < 3 then box7
+        else if row < 6 then box8 
+        else box9
 
 {- Sudoku Solver -} 
 solve :: Board -> Board 
@@ -235,22 +251,6 @@ solve board = let filledBoard = fillInZeroes board in case solveHelper filledBoa
                 (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True boxes) && 
                 (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True rows) &&
                 (foldr (\loc -> \acc -> acc && Map.lookup loc board /= Just val) True cols)
-        
-        {- Returns which box a given location is in -}
-        getBox :: Loc -> [Loc]
-        getBox (row, col) = 
-            if col < 3 then 
-                if row < 3 then box1 
-                else if row < 6 then box2 
-                else box3 
-            else if col < 6 then 
-                if row < 3 then box4 
-                else if row < 6 then box5 
-                else box6
-            else 
-                if row < 3 then box7
-                else if row < 6 then box8 
-                else box9
 
 {- Tests -}
 
