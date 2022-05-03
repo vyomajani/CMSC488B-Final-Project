@@ -103,8 +103,8 @@ drawUI g = [ withBorderStyle BS.unicodeBold
 drawGrid :: Game -> Widget Name
 drawGrid g = vBox rows
   where
-    rows    = intersperse (str (replicate 17 '—')) [hBox $ cells y | y <- [0..height-1]]
-    cells y = intersperse (str "|") [drawCell x y   | x <- [0..width-1]]
+    rows    = intersperse (str (replicate 17 '—')) [hBox $ cells x | x <- [0..width-1]]
+    cells x = intersperse (str "|") [drawCell x y   | y <- [0..width-1]]
     drawCell x y =
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in
       f $ case g ^. board . at (x,y) of -- currently (x,y) is (y,x), need to fix (see issue below)
