@@ -36,7 +36,7 @@ type Loc = (Int, Int)
 
 {- Zero means empty -}
 data Value = Zero | One | Two | Three | Four | Five | Six | Seven | Eight | Nine 
- deriving (Eq, Show)
+ deriving (Eq, Show, Ord)
 
 type Board = Map Loc Value
 
@@ -326,6 +326,9 @@ sampleSudoku7 =
                   ((6,0),Five),((6,1),One),((6,2),Nine),((6,3),Three),((6,4),Two),((6,5),Six),((6,6),Zero),((6,7),Zero),((6,8),Zero),
                   ((7,0),Two),((7,1),Four),((7,2),Eight),((7,3),Nine),((7,4),Five),((7,5),Seven),((7,6),Zero),((7,7),Zero),((7,8),Zero),
                   ((8,0),Seven),((8,1),Six),((8,2),Three),((8,3),Four),((8,4),One),((8,5),Eight),((8,6),Zero),((8,7),Zero),((8,8),Zero)]
+
+--sampleSudoku8 :: Board
+--sampleSudoku8 = boardConvertor "" 
 
 {- Debugging Tools -}
 
