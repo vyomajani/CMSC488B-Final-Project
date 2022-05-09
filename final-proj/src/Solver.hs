@@ -19,18 +19,19 @@ import System.Random (Random(..), newStdGen)
 
 --import Game 
 
--- Coding Plan
--- 1) DONE: Write out solve function to solve an input sudoku board 
--- 2) DONE: Create basic UI for user to put numbers into 
--- 3) DONE: Incorporate solution into UI 
--- 5) DONE: Create a csv parser to parse sudoku inputs
--- 7) DONE: Automatically check whether user's solution is a valid solution
--- 8) DONE: Hints  
+-- DONE
+-- 1) Write out solve function to solve an input sudoku board 
+-- 2) Create basic UI for user to put numbers into 
+-- 3) Incorporate solution into UI 
+-- 4) Create a csv parser to parse sudoku inputs
+-- 5) Automatically check whether user's solution is a valid solution
+-- 6) Hints  
 
 -- TODO
--- 4) Create QuickCheck for checking sudoku solver 
--- 6) Make it all nxn
--- 9) Freeze the original board so users can't modify original input 
+-- 1) Create QuickCheck for checking sudoku solver 
+-- 2) Make it all nxn
+-- 3) Freeze the original board so users can't modify original input 
+-- 4) Take in file inputs 
 
 -- Note: I'm using -- if it's a temporary comment / something to address, {--} if its something to keep that tells us what that section of code is doing 
 
@@ -104,14 +105,12 @@ box8 = [(x, y) | x <- [3..5], y <- [6..8]]
 box9 :: [Loc]
 box9 = [(x, y) | x <- [6..8], y <- [6..8]]
 
--- should this be a parser? How are we creating sudoku boards? 
 {- Creates empty sudoku board (All 0s) -} 
 initSudoku :: Board 
 initSudoku = helper locations initBoard
     where 
         helper [] board = board
         helper (h : t) board = helper t (Map.insert h Zero board)
-        -- for the purposes of testing? Until we have a parser? 
 
 {- Functions -}  
 

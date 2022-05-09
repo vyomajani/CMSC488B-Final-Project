@@ -101,7 +101,9 @@ checkSolution :: Game -> Bool
 checkSolution g = helper (g ^. board) (g ^. solution) locations
   where 
     helper b s [] = True 
-    helper b s (h : t) = if Map.lookup h b == Map.lookup h s then helper b s t else False 
+    helper b s (h : t)
+      | Map.lookup h b == Map.lookup h s = helper b s t 
+      | otherwise = False 
 
 {- Shows a hint on the board upon hitting the H key -}
 showHint :: Game -> Game 
@@ -112,8 +114,8 @@ showHint g =
   where
     helper :: Board -> Board -> [Loc] -> Game
     helper b s [] = g & solved .~ True 
-    helper b s (h : t) = if Map.lookup h b == Map.lookup h s then helper b s t 
-                                    else 
-                                      case Map.lookup h s of 
-                                        Nothing -> error "Should not happen"
-                                        Just x -> g & board .~ (Map.insert h x b)
+    helper b s (h : t) 
+      | Map.lookup h b == Map.lookup h s = helper b s t 
+      | otherwise = case Map.lookup h s of 
+                      Nothing -> error "Should not happen"
+                      Just x -> g & board .~ (Map.insert h x b)
