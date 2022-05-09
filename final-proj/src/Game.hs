@@ -90,5 +90,17 @@ register val g = g & board  %~ Map.insert (g ^. cursor) val
 showSolution :: Game -> Game 
 showSolution g = g & board .~ (g ^. solution) 
 
--- showHint :: Game -> Game 
--- showHint g = 
+{- Shows a hint on the board upon hitting the H key -}
+showHint :: Game -> Game 
+showHint g = 
+  let b = g ^. board in 
+  let s = g ^. solution in 
+  helper b s locations 
+  where
+    helper :: Board -> Board -> [Loc] -> Game
+    helper b s [] = g 
+    helper b s (h : t) = if Map.lookup h b == Map.lookup h s then helper b s t 
+                                    else 
+                                      case Map.lookup h s of 
+                                        Nothing -> error "Should not happen"
+                                        Just x -> g & board .~ (Map.insert h x b)
