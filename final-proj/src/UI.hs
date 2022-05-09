@@ -92,18 +92,19 @@ handleEvent g _                                     = continue g
 -- Drawing
 
 drawUI :: Game -> [Widget Name]
-drawUI g = [ withBorderStyle BS.unicodeBold 
+drawUI g = [vBox [ withBorderStyle BS.unicodeBold 
              $ B.borderWithLabel (str "Sudoku")
-             $ drawGrid g ]
+             $ drawGrid g 
+             , withBorderStyle BS.unicodeBold 
+             $ B.borderWithLabel (str "Help")
+             $ drawHelp g ]]
 
--- drawGameOver :: Game -> Widget Name
--- drawGameOver g
---   | g ^. done = str "Game Over!"
---   | otherwise = emptyWidget
-{-
-  let children = map (\g' -> (minimax g' (g ^. player)), g' ^. cursor) (moves g (g ^. player)) in
-  str (show (snd (maximum children)))
--}
+drawHelp :: Game -> Widget Name
+drawHelp g = vBox [ str "Up / Down / Left / Right Arrow -> Move cursor",
+                    str "0 - 9 -> Input number",
+                    str "Enter -> Solution", 
+                    str "H -> Hint"]
+
 
 drawGrid :: Game -> Widget Name
 drawGrid g = vBox rows
@@ -112,12 +113,11 @@ drawGrid g = vBox rows
     cells x = intersperse (str "|") [drawCell x y   | y <- [0..width-1]]
     drawCell x y =
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in
-      f $ case g ^. board . at (x,y) of -- currently (x,y) is (y,x), need to fix (see issue below)
+      f $ case g ^. board . at (x,y) of 
             Nothing -> str " "
             Just Zero -> str " "
             Just p -> str (Solver.valueConverter p)
 
-            -- ISSUE: When I put sampleSudoku7 on the UI, (6,0) is empty instead of (0,6)
 
 theMap :: AttrMap
 theMap = attrMap V.defAttr [(cursorAttr, bg V.red)]
