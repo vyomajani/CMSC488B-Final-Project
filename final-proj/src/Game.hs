@@ -28,7 +28,7 @@ data Game = Game
   { _board :: Board, 
     _cursor :: Loc,
     _full :: Bool,
-    _input :: Board 
+    _solution :: Board 
   } deriving (Show)
 
 data Direction = North | South | East | West deriving (Eq, Show)
@@ -67,7 +67,7 @@ initGame = let b = boardConverter "0,0,0,2,6,9,7,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3
   return $ Game { _board = b, --initBoard, 
                   _cursor = (0,0), 
                   _full = False,
-                  _input = b }
+                  _solution = Solver.solve b }
 
 -- SampleSudoku7
 -- "0,0,0,2,6,9,0,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0"
@@ -86,31 +86,9 @@ move West g = g & cursor . _2 %~ (\y -> (y - 1) `mod` width)
 register :: Value -> Game -> Game 
 register val g = g & board  %~ Map.insert (g ^. cursor) val
 
--- register :: Game -> Game
--- register g
---   | g ^. done = g
---   | isJust (g ^. board . at (g ^. cursor)) = g
---   | otherwise = g & board  %~ Map.insert (g ^. cursor) (g ^. player)
---                   & player %~ next
-
-{- Shows the solution from the original input board upon hitting Enter,
-   using input board in case user's solution is wrong -}
+{- Shows the solution from the original input board upon hitting Enter -}
 showSolution :: Game -> Game 
-showSolution g = g & board .~ (Solver.solve $ g ^. input) 
+showSolution g = g & board .~ (g ^. solution) 
 
-
--- Checks if the board is full 
--- isFull :: Game -> Bool 
--- isFull g = all (\l -> isJust (g ^. board . at l)) squares 
-
-
--- Check if the solution on the board is correct 
--- checkForWin :: Game -> Bool 
--- checkForWin g = 
---   if isFull g then 
---   else False 
-
--- checkForWin :: Game -> Maybe (Player, Loc)
-  -- case map (uncurry . isWinning g) [(ls, p) | ls <- traversals, p <- [X, O]] of 
-  -- [] -> Nothing 
-  -- (x : _) -> Just x -- some more stuff
+-- showHint :: Game -> Game 
+-- showHint g = 

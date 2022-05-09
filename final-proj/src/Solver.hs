@@ -22,10 +22,12 @@ import System.Random (Random(..), newStdGen)
 -- Coding Plan
 -- 1) DONE: Write out solve function to solve an input sudoku board 
 -- 2) DONE: Create basic UI for user to put numbers into 
--- 3) Incorporate solution into UI ((0,6) (6,0) bug)
+-- 3) DONE: Incorporate solution into UI 
 -- 4) Create QuickCheck for checking sudoku solver 
 -- 5) DONE: Create a csv parser to parse sudoku inputs 
 -- 6) Make it all nxn
+-- 7) Check whether user's solution is a valid solution
+-- 8) Hints  
 
 -- Note: I'm using -- if it's a temporary comment / something to address, {--} if its something to keep that tells us what that section of code is doing 
 
