@@ -27,7 +27,7 @@ import Parser
 data Game = Game
   { _board :: Board, 
     _cursor :: Loc,
-    _full :: Bool,
+    _solved :: Bool,
     _solution :: Board 
   } deriving (Show)
 
@@ -56,17 +56,20 @@ makeLenses ''Game
 
 -- | Step forward in time
 step :: Game -> Game
-step s = flip execState s . runMaybeT $ do
+step s 
+  | checkSolution s = s & solved .~ True
+  | otherwise = s 
+    --flip execState s . runMaybeT $ do
 
   -- Do Nothing
-  return s
+  --return s
 
 -- Initialization
 initGame :: IO Game -- Using sampleSudoku
 initGame = let b = boardConverter "0,0,0,2,6,9,7,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0" in
   return $ Game { _board = b, --initBoard, 
                   _cursor = (0,0), 
-                  _full = False,
+                  _solved = False,
                   _solution = Solver.solve b }
 
 -- SampleSudoku7
@@ -88,7 +91,17 @@ register val g = g & board  %~ Map.insert (g ^. cursor) val
 
 {- Shows the solution from the original input board upon hitting Enter -}
 showSolution :: Game -> Game 
-showSolution g = g & board .~ (g ^. solution) 
+showSolution g 
+  | checkSolution g = g & solved .~ True
+  | otherwise = g & board .~ (g ^. solution) 
+                  & solved .~ True 
+
+{- Return True if correct, False if incorrect -}
+checkSolution :: Game -> Bool 
+checkSolution g = helper (g ^. board) (g ^. solution) locations
+  where 
+    helper b s [] = True 
+    helper b s (h : t) = if Map.lookup h b == Map.lookup h s then helper b s t else False 
 
 {- Shows a hint on the board upon hitting the H key -}
 showHint :: Game -> Game 
@@ -98,7 +111,7 @@ showHint g =
   helper b s locations 
   where
     helper :: Board -> Board -> [Loc] -> Game
-    helper b s [] = g 
+    helper b s [] = g & solved .~ True 
     helper b s (h : t) = if Map.lookup h b == Map.lookup h s then helper b s t 
                                     else 
                                       case Map.lookup h s of 

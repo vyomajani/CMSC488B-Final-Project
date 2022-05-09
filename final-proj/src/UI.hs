@@ -94,7 +94,8 @@ handleEvent g _                                     = continue g
 drawUI :: Game -> [Widget Name]
 drawUI g = [vBox [ withBorderStyle BS.unicodeBold 
              $ B.borderWithLabel (str "Sudoku")
-             $ drawGrid g 
+             $ drawGrid g
+             , drawSolved g 
              , withBorderStyle BS.unicodeBold 
              $ B.borderWithLabel (str "Help")
              $ drawHelp g ]]
@@ -105,6 +106,10 @@ drawHelp g = vBox [ str "Up / Down / Left / Right Arrow -> Move cursor",
                     str "Enter -> Solution", 
                     str "H -> Hint"]
 
+drawSolved :: Game -> Widget Name 
+drawSolved g 
+  | g ^. solved = str "Solved!"
+  | otherwise = emptyWidget
 
 drawGrid :: Game -> Widget Name
 drawGrid g = vBox rows

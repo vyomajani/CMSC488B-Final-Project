@@ -23,12 +23,14 @@ import System.Random (Random(..), newStdGen)
 -- 1) DONE: Write out solve function to solve an input sudoku board 
 -- 2) DONE: Create basic UI for user to put numbers into 
 -- 3) DONE: Incorporate solution into UI 
+-- 5) DONE: Create a csv parser to parse sudoku inputs
+-- 7) DONE: Automatically check whether user's solution is a valid solution
+-- 8) DONE: Hints  
+
+-- TODO
 -- 4) Create QuickCheck for checking sudoku solver 
--- 5) DONE: Create a csv parser to parse sudoku inputs 
 -- 6) Make it all nxn
--- 7) Check whether user's solution is a valid solution
--- 8) DONE: Hints 
--- 9) Freeze the original board so users can't modify original input  
+-- 9) Freeze the original board so users can't modify original input 
 
 -- Note: I'm using -- if it's a temporary comment / something to address, {--} if its something to keep that tells us what that section of code is doing 
 
