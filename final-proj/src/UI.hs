@@ -86,6 +86,7 @@ handleEvent g (VtyEvent (V.EvKey (V.KChar '8') [])) = continue $ register Eight 
 handleEvent g (VtyEvent (V.EvKey (V.KChar '9') [])) = continue $ register Nine g
 
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'h') [])) = continue $ showHint g
+handleEvent g (VtyEvent (V.EvKey (V.KChar 'l') [])) = continue $ loadBoard g
 
 handleEvent g _                                     = continue g
 

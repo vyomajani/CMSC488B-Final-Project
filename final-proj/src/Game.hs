@@ -12,6 +12,9 @@ import Control.Monad.Trans.State
 
 import System.Random (Random(..), newStdGen)
 
+import System.IO
+import System.Directory
+import Control.Monad
 import Data.Maybe (fromMaybe, isJust, fromJust, isNothing)
 import Data.List (nub)
 import Data.Map (Map)
@@ -21,6 +24,7 @@ import Data.Ix(range)
 
 import Solver
 import Parser 
+import FileIO
 
 -- Types
 
@@ -119,3 +123,15 @@ showHint g =
       | otherwise = case Map.lookup h s of 
                       Nothing -> error "Should not happen"
                       Just x -> g & board .~ (Map.insert h x b)
+
+{- Loads a board from a file "input.txt" -}
+loadBoard :: Game -> Game 
+loadBoard g = do
+  newGame <- loadBoardHelper g
+  return newGame
+  
+loadBoardHelper :: Game -> IO Game 
+loadBoardHelper g = do
+  newBoard <- boardFromFile "input.txt"
+  return $ g & board .~ newBoard
+

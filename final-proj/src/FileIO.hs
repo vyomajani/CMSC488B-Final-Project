@@ -13,12 +13,12 @@ import qualified Data.Map as Map
 
 -- Takes a filename for a csv of digits, converts that to a board, then pretty prints it
 -- Not totally useful right now, but the prettyprint could be replaced with something else
-boardFromFile :: String -> IO ()
+boardFromFile :: String -> IO Board
 boardFromFile fileName = do
   input <- openFile fileName ReadMode
   inputContents <- hGetContents input
-  prettyPrint $ boardConverter inputContents
-  hClose input
+--  hClose input
+  return $ boardConverter inputContents
 
 -- Takes a board and saves it to a file as CSV
 boardToFile :: Board -> String -> IO ()
