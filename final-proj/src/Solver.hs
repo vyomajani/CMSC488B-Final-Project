@@ -32,6 +32,7 @@ import System.Random (Random(..), newStdGen)
 -- 2) Make it all nxn
 -- 3) Freeze the original board so users can't modify original input 
 -- 4) Take in file inputs 
+-- 5) Ask if user want to see the solution yet or if they want to continue solving 
 
 -- Note: I'm using -- if it's a temporary comment / something to address, {--} if its something to keep that tells us what that section of code is doing 
 
