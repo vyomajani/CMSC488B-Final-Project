@@ -15,11 +15,14 @@ A playable interface for Sudoku.
 </p>
 
 
-## playing the game
+## Playing the Game
 
 Use `stack run` to launch the game
 
 Press the arrow keys to move the cursor around the board
+
 Enter numbers simply by pressing the '0' to '9' keys 
+
 To recieve a hint, press the 'h' key
+
 To recieve the solution, press the Enter key 
