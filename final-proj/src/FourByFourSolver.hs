@@ -17,7 +17,7 @@ import Control.Monad.Trans.State
 
 import System.Random (Random(..), newStdGen)
 
---import Game 
+import Solver
 
 -- DONE
 -- 1) Write out solve function to solve an input sudoku board 
@@ -39,16 +39,6 @@ import System.Random (Random(..), newStdGen)
 
 {- Types -} 
 
-type Loc = (Int, Int)
-
-{- Zero means empty -}
-data Value = Zero | One | Two | Three | Four
- deriving (Eq, Show)
-
-type Board = Map Loc Value
-
-{- Original input board (do not modify Zeros) -} 
-type Input = Map Loc Value 
 
 {- Constants -} 
 
@@ -58,9 +48,6 @@ width = 4
 
 locations :: [Loc]
 locations = [(x, y) | x <- [0..width - 1], y <- [0..height - 1]] 
-
-initBoard :: Board 
-initBoard = Map.empty 
 
 rowsCols :: [[Loc]]
 rowsCols = [[(x, y) | y <- [0..height - 1]] | x <- [0..width - 1]] ++ 
@@ -95,13 +82,6 @@ initSudoku = helper locations initBoard
 
 {- Functions -}  
 
-next :: Value -> Value 
-next Zero = One
-next One = Two 
-next Two = Three 
-next Three = Four 
-next Four = Zero
-
 fillInZeroes :: Board -> Board 
 fillInZeroes board = helper locations board 
     where 
@@ -110,6 +90,13 @@ fillInZeroes board = helper locations board
             case Map.lookup h board of 
                 Nothing -> helper t (Map.insert h Zero board)
                 _ -> helper t board 
+
+next :: Value -> Value 
+next Zero = One
+next One = Two 
+next Two = Three 
+next Three = Four 
+next Four = Zero
 
 {- Returns which box a given location is in -}
 getBox :: Loc -> [Loc]
@@ -212,7 +199,12 @@ solve board = let filledBoard = fillInZeroes board in case solveHelper filledBoa
 -- completeSampleSudoku == solve sampleSudoku<i> sampleSudoku<i>
 
 sampleSudoku1  :: Board
-sampleSudoku1 = Map.fromList [((0,0),Zero),((0,1),Three),((0,2),Four),((0,3),Zero),((1,0),Four),((1,1),Zero),((1,2),Zero),((1,3),Two),((2,0),One),((2,1),Zero),((2,2),Zero),((2,3),Three),((3,0),Zero),((3,1),Two),((3,2),One),((3,3),Zero)]
+sampleSudoku1 = 
+    Map.fromList [((0,0),Zero),((0,1),Three),((0,2),Four),((0,3),Zero),
+                  ((1,0),Four),((1,1),Zero),((1,2),Zero),((1,3),Two),
+                  ((2,0),One),((2,1),Zero),((2,2),Zero),((2,3),Three),
+                  ((3,0),Zero),((3,1),Two),((3,2),One),((3,3),Zero)]
+                --   0,3,4,0,4,0,0,2,1,0,0,3,0,2,1,0
 
 sampleSudoku2  :: Board
 sampleSudoku2 = Map.fromList [((0,0),Three),((0,1),Four),((0,2),One),((0,3),Zero),((1,0),Zero),((1,1),Two),((1,2),Zero),((1,3),Zero),((2,0),Zero),((2,1),Zero),((2,2),Two),((2,3),Zero),((3,0),Zero),((3,1),One),((3,2),Four),((3,3),Three)]
@@ -241,13 +233,6 @@ prettyPrint board = helper 0 (Map.toList board)
             putStr "\n"
             helper (i + 1) t 
         helper _ _ = error "Should not happen, boards should be pretty"
-
-valueConverter :: Value -> String 
-valueConverter Zero = "0" 
-valueConverter One = "1" 
-valueConverter Two = "2"
-valueConverter Three = "3"
-valueConverter Four = "4"
 
 {- 
 

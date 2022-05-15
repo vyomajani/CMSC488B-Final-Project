@@ -7,6 +7,8 @@ import Control.Concurrent (threadDelay, forkIO)
 
 import Game
 import Solver
+import FourByFourSolver
+import NineByNineSolver
 
 import Brick
   ( App(..), AttrMap, BrickEvent(..), EventM, Next, Widget
@@ -68,6 +70,9 @@ main = do
 handleEvent :: Game -> BrickEvent Name Tick -> EventM Name (Next Game)
 handleEvent g (AppEvent Tick)                       = continue $ step g -- Step Time
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'q') [])) = halt g            -- Quit
+
+handleEvent g (VtyEvent (V.EvKey (V.KChar 's') [])) = continue $ switchSize g
+
 handleEvent g (VtyEvent (V.EvKey V.KUp []))         = continue $ move North g
 handleEvent g (VtyEvent (V.EvKey V.KDown []))       = continue $ move South g
 handleEvent g (VtyEvent (V.EvKey V.KRight []))      = continue $ move East g
@@ -114,7 +119,9 @@ drawSolved g
 drawGrid :: Game -> Widget Name
 drawGrid g = vBox rows
   where
-    rows    = intersperse (str (replicate 17 '—')) [hBox $ cells x | x <- [0..width-1]]
+    width = (if g ^. four then FourByFourSolver.width else NineByNineSolver.width)
+    height = (if g ^. four then FourByFourSolver.height else NineByNineSolver.height)
+    rows    = intersperse (str (if g ^. four then (replicate 8 '—') else (replicate 17 '—'))) [hBox $ cells x | x <- [0..width-1]]
     cells x = intersperse (str "|") [drawCell x y   | y <- [0..width-1]]
     drawCell x y =
       let f = if g ^. cursor == (x,y) then withAttr cursorAttr else id in

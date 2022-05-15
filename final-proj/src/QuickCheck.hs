@@ -4,15 +4,16 @@ import Data.List (nub)
 import Data.Map (Map)
 import qualified Data.Map as Map
 
-import Solver 
+import Solver
+import NineByNineSolver
     
 prop_valid_solution :: Board -> Bool 
-prop_valid_solution board = helper (solve board) locations 
+prop_valid_solution board = helper (NineByNineSolver.solve board) locations 
     where 
         helper board [] = True 
         helper board ((row, col) : t) = 
-            let rows = [(row, c) | c <- [0..width - 1]] in 
-            let cols = [(r, col) | r <- [0..height - 1]] in
+            let rows = [(row, c) | c <- [0..NineByNineSolver.width - 1]] in 
+            let cols = [(r, col) | r <- [0..NineByNineSolver.height - 1]] in
             let boxes = getBox (row, col) in
             let v = Map.lookup (row, col) board in 
             case v of 
@@ -24,10 +25,10 @@ prop_valid_solution board = helper (solve board) locations
 
 prop_valid_location :: Loc -> Board -> Bool 
 prop_valid_location (row, col) inBoard = 
-    let rows = [(row, c) | c <- [0..width - 1]] in 
-    let cols = [(r, col) | r <- [0..height - 1]] in
+    let rows = [(row, c) | c <- [0..NineByNineSolver.width - 1]] in 
+    let cols = [(r, col) | r <- [0..NineByNineSolver.height - 1]] in
     let boxes = getBox (row, col) in
-    let board = solve inBoard in
+    let board = NineByNineSolver.solve inBoard in
     let v = Map.lookup (row, col) board in 
     case v of 
         Nothing -> error "Should not happen"
@@ -37,12 +38,12 @@ prop_valid_location (row, col) inBoard =
             (foldr (\loc -> \acc -> acc + (if Map.lookup loc board == Just val then 1 else 0)) 0 cols) == 1 
 
 prop_no_blanks :: Board -> Bool
-prop_no_blanks board =  helper (solve board) locations 
+prop_no_blanks board =  helper (NineByNineSolver.solve board) locations 
     where 
         helper board [] = True 
         helper board ((row, col) : t) = 
-            let rows = [(row, c) | c <- [0..width - 1]] in 
-            let cols = [(r, col) | r <- [0..height - 1]] in
+            let rows = [(row, c) | c <- [0..NineByNineSolver.width - 1]] in 
+            let cols = [(r, col) | r <- [0..NineByNineSolver.height - 1]] in
             let boxes = getBox (row, col) in
             let v = Map.lookup (row, col) board in 
             (foldr (\loc -> \acc -> acc && (Map.lookup loc board /= Just Zero)) True boxes) && 
