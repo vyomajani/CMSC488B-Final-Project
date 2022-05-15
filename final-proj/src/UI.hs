@@ -107,9 +107,10 @@ drawUI g = [vBox [ withBorderStyle BS.unicodeBold
 
 drawHelp :: Game -> Widget Name
 drawHelp g = vBox [ str "Up / Down / Left / Right Arrow -> Move cursor",
-                    str "0 - 9 -> Input number",
+                    str "0, 1, 2... -> Input number",
                     str "Enter -> Solution", 
-                    str "H -> Hint"]
+                    str "H -> Hint",
+                    str "S -> Switch to 4x4 or 9x9 board"]
 
 drawSolved :: Game -> Widget Name 
 drawSolved g 
