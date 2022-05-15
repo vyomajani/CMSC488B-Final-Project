@@ -58,7 +58,10 @@ main = do
   forkIO $ forever $ do
     writeBChan chan Tick
     threadDelay 100000 -- decides how fast your game moves
-  g <- initGame
+  g <- loadBoard $ Game { _board = initBoard,
+                          _cursor = (0,0),
+                          _solved = False,
+                          _solution = Solver.solve initBoard }
   let builder = V.mkVty V.defaultConfig
   initialVty <- builder
   void $ customMain initialVty builder (Just chan) app g
@@ -86,7 +89,6 @@ handleEvent g (VtyEvent (V.EvKey (V.KChar '8') [])) = continue $ register Eight 
 handleEvent g (VtyEvent (V.EvKey (V.KChar '9') [])) = continue $ register Nine g
 
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'h') [])) = continue $ showHint g
-handleEvent g (VtyEvent (V.EvKey (V.KChar 'l') [])) = continue $ loadBoard g
 
 handleEvent g _                                     = continue g
 

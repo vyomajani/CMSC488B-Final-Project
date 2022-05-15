@@ -125,13 +125,8 @@ showHint g =
                       Just x -> g & board .~ (Map.insert h x b)
 
 {- Loads a board from a file "input.txt" -}
-loadBoard :: Game -> Game 
+loadBoard :: Game -> IO Game 
 loadBoard g = do
-  newGame <- loadBoardHelper g
-  return newGame
-  
-loadBoardHelper :: Game -> IO Game 
-loadBoardHelper g = do
   newBoard <- boardFromFile "input.txt"
   return $ g & board .~ newBoard
-
+             & solution .~ (solve newBoard)
