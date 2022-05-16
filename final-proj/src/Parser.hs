@@ -1,6 +1,8 @@
 module Parser where 
 
-import Solver 
+import Solver
+import NineByNineSolver 
+import FourByFourSolver
 
 import Control.Applicative
 import Control.Monad (guard)
@@ -82,18 +84,33 @@ manyVals = ((:) <$> parseComma <*> manyVals) `chooseFirstP` (fmap (:[]) parseVal
 
 
 {- Converts a string of "dig, dig, dig, ..." to a Sudoku board -}
-boardConverter :: String -> Board 
-boardConverter s = case doParse (manyVals) s of 
-    Nothing -> initSudoku 
-    Just (lst, _) -> readBoard lst 
+boardConverter9x9 :: String -> Board 
+boardConverter9x9 s = case doParse (manyVals) s of 
+    Nothing -> NineByNineSolver.initSudoku 
+    Just (lst, _) -> readBoard9x9 lst 
 
-readBoard :: [Value] -> Board 
-readBoard lst = helper lst 0 0 initSudoku where 
+readBoard9x9 :: [Value] -> Board 
+readBoard9x9 lst = helper lst 0 0 NineByNineSolver.initSudoku where 
     helper [] row col board = board 
     helper (h : t) row col board = 
         if row >= 9 then board 
         else if col >= 9 then 
             if row <= 7 then helper t (row + 1) 1 (Map.insert (row + 1, 0) h board)
+            else board 
+        else helper t row (col + 1) (Map.insert (row, col) h board)
+
+boardConverter4x4 :: String -> Board 
+boardConverter4x4 s = case doParse (manyVals) s of 
+    Nothing -> FourByFourSolver.initSudoku 
+    Just (lst, _) -> readBoard4x4 lst 
+
+readBoard4x4 :: [Value] -> Board 
+readBoard4x4 lst = helper lst 0 0 FourByFourSolver.initSudoku where 
+    helper [] row col board = board 
+    helper (h : t) row col board = 
+        if row >= 4 then board 
+        else if col >= 4 then 
+            if row <= 2 then helper t (row + 1) 1 (Map.insert (row + 1, 0) h board)
             else board 
         else helper t row (col + 1) (Map.insert (row, col) h board)
 

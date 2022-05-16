@@ -25,6 +25,8 @@ import Data.Ix(range)
 import Solver
 import Parser 
 import FileIO
+import FourByFourSolver
+import NineByNineSolver
 
 -- Types
 
@@ -32,7 +34,8 @@ data Game = Game
   { _board :: Board, 
     _cursor :: Loc,
     _solved :: Bool,
-    _solution :: Board 
+    _solution :: Board,
+    _four :: Bool -- tells whether the board is 4x4 or 9x9
   } deriving (Show)
 
 data Direction = North | South | East | West deriving (Eq, Show)
@@ -41,40 +44,22 @@ makeLenses ''Game
 
 -- -- Constants
 
-
-
--- -- squares :: [Loc]
--- -- squares = range ((0,0), (width-1, height-1))
-
 -- -- Functions
-
--- | Step forward in time
--- step :: Game -> Game
--- step g
---   | g ^. done = g
---   | isJust checkWin = g & done .~ True
---                         & won  .~ checkWin
---   | full g = g & done .~ True
---   | otherwise = g 
---   where checkWin = checkForWin g
 
 -- | Step forward in time
 step :: Game -> Game
 step s 
   | checkSolution s = s & solved .~ True
   | otherwise = s 
-    --flip execState s . runMaybeT $ do
-
-  -- Do Nothing
-  --return s
 
 -- Initialization
-initGame :: IO Game -- Using sampleSudoku
-initGame = let b = boardConverter "0,0,0,2,6,9,7,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0" in
+initGame :: IO Game 
+initGame = let b = boardConverter9x9 "0,0,0,2,6,9,0,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0" in
   return $ Game { _board = b, --initBoard, 
                   _cursor = (0,0), 
                   _solved = False,
-                  _solution = Solver.solve b }
+                  _solution = NineByNineSolver.solve b,
+                  _four = False }
 
 -- SampleSudoku7
 -- "0,0,0,2,6,9,0,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0"
@@ -84,10 +69,10 @@ initGame = let b = boardConverter "0,0,0,2,6,9,7,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3
 
 {- Move cursor around board -}
 move :: Direction -> Game -> Game 
-move North g = g & cursor . _1 %~ (\x -> (x - 1) `mod` height)
-move South g = g & cursor . _1 %~ (\x -> (x + 1) `mod` height)
-move East g = g & cursor . _2 %~ (\y -> (y + 1) `mod` width)
-move West g = g & cursor . _2 %~ (\y -> (y - 1) `mod` width)
+move North g = g & cursor . _1 %~ (\x -> (x - 1) `mod` (if g ^. four then FourByFourSolver.height else NineByNineSolver.height))
+move South g = g & cursor . _1 %~ (\x -> (x + 1) `mod` (if g ^. four then FourByFourSolver.height else NineByNineSolver.height))
+move East g = g & cursor . _2 %~ (\y -> (y + 1) `mod` (if g ^. four then FourByFourSolver.width else NineByNineSolver.width))
+move West g = g & cursor . _2 %~ (\y -> (y - 1) `mod` (if g ^. four then FourByFourSolver.width else NineByNineSolver.width))
 
 {- Inputs a value into the playable board -}
 register :: Value -> Game -> Game 
@@ -102,7 +87,7 @@ showSolution g
 
 {- Return True if correct, False if incorrect -}
 checkSolution :: Game -> Bool 
-checkSolution g = helper (g ^. board) (g ^. solution) locations
+checkSolution g = helper (g ^. board) (g ^. solution) (if g ^. four then FourByFourSolver.locations else NineByNineSolver.locations)
   where 
     helper b s [] = True 
     helper b s (h : t)
@@ -114,7 +99,7 @@ showHint :: Game -> Game
 showHint g = 
   let b = g ^. board in 
   let s = g ^. solution in 
-  helper b s locations 
+  helper b s (if g ^. four then FourByFourSolver.locations else NineByNineSolver.locations)
   where
     helper :: Board -> Board -> [Loc] -> Game
     helper b s [] = g & solved .~ True 
@@ -124,9 +109,21 @@ showHint g =
                       Nothing -> error "Should not happen"
                       Just x -> g & board .~ (Map.insert h x b)
 
+
 {- Loads a board from a file "input.txt" -}
 loadBoard :: Game -> IO Game 
 loadBoard g = do
   newBoard <- boardFromFile "input.txt"
   return $ g & board .~ newBoard
              & solution .~ (solve newBoard)
+
+switchSize :: Game -> Game 
+switchSize g = if g ^. four then let b = boardConverter9x9 "0,0,0,2,6,9,0,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0" in
+                                 g & four .~ False 
+                                   & board .~ b
+                                   & solution .~ NineByNineSolver.solve b
+                else let b = boardConverter4x4 "0,3,4,0,4,0,0,2,1,0,0,3,0,2,1,0" in
+                  g & four .~ True 
+                    & board .~ b
+                    & solution .~ FourByFourSolver.solve b
+
