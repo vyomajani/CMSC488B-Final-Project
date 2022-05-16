@@ -15,6 +15,8 @@ Press the arrow keys to move the cursor around the board
 
 Enter numbers simply by pressing the '0' to '9' keys 
 
+Delete numbers by pressing the Backspace key 
+
 To recieve a hint, press the 'h' key
 
 To recieve the solution, press the Enter key 
