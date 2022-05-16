@@ -15,12 +15,14 @@ import NineByNineSolver
 
 -- Takes a filename for a csv of digits, converts that to a board, then pretty prints it
 -- Not totally useful right now, but the prettyprint could be replaced with something else
-boardFromFile :: String -> IO ()
+boardFromFile :: String -> IO Board
 boardFromFile fileName = do
   input <- openFile fileName ReadMode
   inputContents <- hGetContents input
-  NineByNineSolver.prettyPrint $ boardConverter9x9 inputContents
-  hClose input
+--  hClose input
+  return $ boardConverter inputContents
+--NineByNineSolver.prettyPrint $ boardConverter9x9 inputContents
+--hClose input
 
 -- Takes a board and saves it to a file as CSV
 boardToFile :: Board -> String -> IO ()

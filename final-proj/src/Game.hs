@@ -12,6 +12,9 @@ import Control.Monad.Trans.State
 
 import System.Random (Random(..), newStdGen)
 
+import System.IO
+import System.Directory
+import Control.Monad
 import Data.Maybe (fromMaybe, isJust, fromJust, isNothing)
 import Data.List (nub)
 import Data.Map (Map)
@@ -21,6 +24,7 @@ import Data.Ix(range)
 
 import Solver
 import Parser 
+import FileIO
 import FourByFourSolver
 import NineByNineSolver
 
@@ -105,6 +109,14 @@ showHint g =
                       Nothing -> error "Should not happen"
                       Just x -> g & board .~ (Map.insert h x b)
 
+
+{- Loads a board from a file "input.txt" -}
+loadBoard :: Game -> IO Game 
+loadBoard g = do
+  newBoard <- boardFromFile "input.txt"
+  return $ g & board .~ newBoard
+             & solution .~ (solve newBoard)
+
 switchSize :: Game -> Game 
 switchSize g = if g ^. four then let b = boardConverter9x9 "0,0,0,2,6,9,0,8,1,0,0,0,5,7,1,4,9,3,0,0,0,8,3,4,5,6,2,8,2,6,0,0,0,3,4,7,3,7,4,0,0,0,9,1,5,9,5,1,0,0,0,6,2,8,5,1,9,3,2,6,0,0,0,2,4,8,9,5,7,0,0,0,7,6,3,4,1,8,0,0,0" in
                                  g & four .~ False 
@@ -114,3 +126,4 @@ switchSize g = if g ^. four then let b = boardConverter9x9 "0,0,0,2,6,9,0,8,1,0,
                   g & four .~ True 
                     & board .~ b
                     & solution .~ FourByFourSolver.solve b
+
