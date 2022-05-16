@@ -1,12 +1,6 @@
 # Sudoku Solver
 A playable interface for Sudoku. 
 
-
-<p align="center">
-  <img src="./docs/img/example.gif"/>
-</p>
-
-
 ## Playing the Game
 
 Use `stack run` to launch the game
@@ -21,6 +15,7 @@ To recieve a hint, press the 'h' key
 
 To recieve the solution, press the Enter key 
 
+To quit, press the 'q' key 
 
 ## Coding Plan 
 1) Write out solve function to solve an input sudoku board 
@@ -36,3 +31,7 @@ To recieve the solution, press the Enter key
 1) Freeze the original input board so users can't modify the original input 
 2) Input boards via File IO
 3) Ask if the user wants to see the solution yet or if they want to continue playing, upon hitting Enter
+
+<p align="center">
+  <img src="./docs/img/example.gif"/>
+</p>
