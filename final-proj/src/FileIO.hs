@@ -20,7 +20,7 @@ boardFromFile fileName = do
   input <- openFile fileName ReadMode
   inputContents <- hGetContents input
 --  hClose input
-  return $ boardConverter inputContents
+  return $ boardConverter9x9 inputContents
 --NineByNineSolver.prettyPrint $ boardConverter9x9 inputContents
 --hClose input
 

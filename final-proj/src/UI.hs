@@ -63,7 +63,8 @@ main = do
   g <- loadBoard $ Game { _board = initBoard,
                           _cursor = (0,0),
                           _solved = False,
-                          _solution = Solver.solve initBoard }
+                          _solution = NineByNineSolver.solve initBoard,
+                          _four = False }
   let builder = V.mkVty V.defaultConfig
   initialVty <- builder
   void $ customMain initialVty builder (Just chan) app g
