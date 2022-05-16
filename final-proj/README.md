@@ -1,6 +1,8 @@
 # Sudoku Solver
 A playable interface for Sudoku. 
 
+We would like the project featured on the course website.
+
 ## Playing the Game
 
 Use `stack run` to launch the game
