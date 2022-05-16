@@ -15,6 +15,8 @@ To recieve a hint, press the 'h' key
 
 To recieve the solution, press the Enter key 
 
+To switch the board size, press the 's' key
+
 To quit, press the 'q' key 
 
 ## Coding Plan 
@@ -31,7 +33,4 @@ To quit, press the 'q' key
 1) Freeze the original input board so users can't modify the original input 
 2) Input boards via File IO
 3) Ask if the user wants to see the solution yet or if they want to continue playing, upon hitting Enter
-
-<p align="center">
-  <img src="./docs/img/example.gif"/>
-</p>
+4) Allow users to switch board sizes without losing their progress
