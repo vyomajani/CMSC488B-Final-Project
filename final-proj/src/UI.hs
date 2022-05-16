@@ -89,6 +89,7 @@ handleEvent g (VtyEvent (V.EvKey (V.KChar '6') [])) = continue $ register Six g
 handleEvent g (VtyEvent (V.EvKey (V.KChar '7') [])) = continue $ register Seven g
 handleEvent g (VtyEvent (V.EvKey (V.KChar '8') [])) = continue $ register Eight g
 handleEvent g (VtyEvent (V.EvKey (V.KChar '9') [])) = continue $ register Nine g
+handleEvent g (VtyEvent (V.EvKey V.KBS [])) = continue $ register Zero g
 
 handleEvent g (VtyEvent (V.EvKey (V.KChar 'h') [])) = continue $ showHint g
 
